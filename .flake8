@@ -1,0 +1,15 @@
+[flake8]
+jobs = auto
+show-source = True
+filename = *.py
+exclude = 
+    .git,
+    __pycache__,
+    backend/wsgi/protorpc,
+    *.pyc
+statistics = True
+max-line-length = 119
+max-complexity = 10
+ignore = 
+    E401, # multiple imports in one line
+    E501, # line length

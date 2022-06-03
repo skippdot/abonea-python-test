@@ -1,0 +1,11 @@
+.DS_Store
+*.pyc
+*.log
+.idea
+.settings
+.coverage
+.project
+.vscode/
+venv/
+.idea/
+*.orig
