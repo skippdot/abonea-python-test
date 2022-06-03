@@ -1,7 +1,9 @@
 ## Running the project:
 
-start the backend:
+### Start the backend:
+
 	gunicorn backend.gunicorn:application
 
-run tests:
+### Run tests:
+
 	python test.py
