@@ -7,7 +7,7 @@ verify_ssl = true
 
 [packages]
 flake8 = "==7.3.0"
-inmemory-datastore-stub = "==1.0.0"
+inmemory-datastore-stub = "==1.1.0"
 coverage = "==7.15.4"
 google-cloud-logging = "==3.16.2"
 google-cloud-ndb = "==2.5.1"
