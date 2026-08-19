@@ -26,8 +26,6 @@ WSGI applications.  For more information about WSGI, please see:
 
 __author__ = 'rafek@google.com (Rafe Kaplan)'
 
-import cgi
-
 try:
     import http.client  # python2
 except ImportError:
@@ -37,7 +35,6 @@ import logging
 import re
 
 from .. import messages
-from .. import registry
 from .. import remote
 from .. import util
 from . import util as wsgi_util
@@ -58,6 +55,13 @@ DEFAULT_REGISTRY_PATH = '/protorpc'
 
 
 @util.positional(2)
+def _registry():
+  # Imported on demand: protorpc.registry (and the descriptor module it pulls in)
+  # is only needed when a caller asks for a mounted registry.
+  from .. import registry
+  return registry
+
+
 def service_mapping(service_factory, service_path=r'.*', protocols=None):
   """WSGI gunicorn that handles a single ProtoRPC service mapping.
 
@@ -89,7 +93,7 @@ def service_mapping(service_factory, service_path=r'.*', protocols=None):
       return _HTTP_BAD_REQUEST(environ, start_response)
 
     # TODO(rafek): Handle alternate encodings.
-    content_type = cgi.parse_header(content_type)[0]
+    content_type = util.parse_header(content_type)[0]
 
     request_method = environ['REQUEST_METHOD']
     if request_method != 'POST':
@@ -266,6 +270,6 @@ def service_mappings(services, registry_path=DEFAULT_REGISTRY_PATH):
 
   if registry_map is not None:
     final_mapping.append(service_mapping(
-      registry.RegistryService.new_factory(registry_map), registry_path))
+      _registry().RegistryService.new_factory(registry_map), registry_path))
 
   return wsgi_util.first_found(final_mapping)

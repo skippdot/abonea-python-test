@@ -23,8 +23,8 @@ __author__ = ['rafek@google.com (Rafe Kaplan)',
               'guido@google.com (Guido van Rossum)',
 ]
 
-import cgi
 import datetime
+import email.message
 import functools
 import inspect
 import os
@@ -38,6 +38,7 @@ __all__ = ['AcceptItem',
            'decode_datetime',
            'get_package_for_module',
            'pad_string',
+           'parse_header',
            'parse_accept_header',
            'positional',
            'PROTORPC_PROJECT_URL',
@@ -52,6 +53,27 @@ class Error(Exception):
 
 class AcceptError(Error):
   """Raised when there is an error parsing the accept header."""
+
+
+def parse_header(line):
+  """Parse a Content-Type like header into a value and a parameters dict.
+
+  Replacement for cgi.parse_header, removed from the standard library in
+  Python 3.13 (PEP 594). Uses email.message, the replacement recommended by
+  the Python documentation.
+
+  Args:
+    line: Unparsed header value, eg 'text/html; charset=utf-8'.
+
+  Returns:
+    Tuple (value, parameters dict).
+  """
+  message = email.message.Message()
+  message['content-type'] = line
+  params = message.get_params()
+  if not params:
+    return line, {}
+  return params[0][0], dict(params[1:])
 
 
 PROTORPC_PROJECT_URL = 'http://code.google.com/p/google-protorpc'
@@ -176,7 +198,7 @@ def positional(max_positional_args):
   if isinstance(max_positional_args, (int)):
     return positional_decorator
   else:
-    args, _, _, defaults = inspect.getargspec(max_positional_args)
+    args, _, _, defaults = inspect.getfullargspec(max_positional_args)[:4]
     if defaults is None:
       raise ValueError(
           'Functions with no keyword arguments must specify '
@@ -231,7 +253,7 @@ class AcceptItem(object):
       index: The index that this accept item was found in the Accept header.
     """
     accept_header = accept_header.lower()
-    content_type, values = cgi.parse_header(accept_header)
+    content_type, values = parse_header(accept_header)
     match = self.__CONTENT_TYPE_REGEX.match(content_type)
     if not match:
       raise AcceptError('Not valid Accept header: %s' % accept_header)
@@ -287,7 +309,7 @@ class AcceptItem(object):
     Returns:
       True if accept header matches content type, else False.
     """
-    content_type, _ = cgi.parse_header(content_type)
+    content_type, _ = parse_header(content_type)
     match = self.__CONTENT_TYPE_REGEX.match(content_type.lower())
     if not match:
       return False

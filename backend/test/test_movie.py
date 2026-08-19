@@ -45,10 +45,13 @@ class TestMovieApi(test.TestCase):
         self.assertEqual(from10to25["movies"][:10], first20["movies"][10:])
 
     def test_get(self):
-        single = self.api_client.post("movie.get", dict(title="Holiday"))
+        # An unambiguous title: OMDB returns several different films for the
+        # bare "Holiday" query and its pick has changed over time.
+        single = self.api_client.post("movie.get", dict(title="Roman Holiday"))
         single.pop("poster")
         self.assertEqual(
-            single, {"title": "Holiday", "year": "1938", "imdbID": "tt0030241"}
+            single,
+            {"title": "Roman Holiday", "year": "1953", "imdbID": "tt0046250"},
         )
 
     def test_post(self):
