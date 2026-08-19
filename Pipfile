@@ -6,12 +6,13 @@ verify_ssl = true
 [dev-packages]
 
 [packages]
-InMemoryCloudDatastoreStub = "==0.0.15"
-flake8 = "==3.8.4"
-coverage = "==5.3.0"
-google-cloud-logging = "==1.15.1"
-google-cloud-ndb = "==1.7.1"
-gunicorn = "==23.0.0"
+flake8 = "==7.3.0"
+inmemory-datastore-stub = "==1.0.0"
+coverage = "==7.15.4"
+google-cloud-logging = "==3.16.2"
+google-cloud-ndb = "==2.5.1"
+gunicorn = "==26.1.0"
+requests = "==2.34.2"
 
 [requires]
-python_version = "3.9"
+python_version = "3.14"

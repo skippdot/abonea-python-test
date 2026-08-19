@@ -1,5 +1,5 @@
 from google.cloud import logging
-from google.cloud.logging.logger import Logger
+from google.cloud.logging import Logger
 
 
 class Client:
@@ -8,8 +8,8 @@ class Client:
         self.namespace = namespace
         self.credentials = credentials
 
-    def logger(self, name):
-        return Logger(name, client=self)
+    def logger(self, name, *, labels=None, resource=None):
+        return Logger(name, client=self, labels=labels, resource=resource)
 
 
 logging.Client = Client

@@ -148,8 +148,12 @@ class ValidationError(Error):
 
 # Attributes that are reserved by a class definition that
 # may not be used by either Enum or Message class definitions.
+# __firstlineno__ and __static_attributes__ are injected into every class
+# namespace by CPython 3.13+, so they must be ignored alongside the older
+# dunders when validating Enum and Message definitions.
 _RESERVED_ATTRIBUTE_NAMES = frozenset(
-    ['__module__', '__doc__', '__qualname__'])
+    ['__module__', '__doc__', '__qualname__',
+     '__firstlineno__', '__static_attributes__'])
 
 _POST_INIT_FIELD_ATTRIBUTE_NAMES = frozenset(
     ['name',

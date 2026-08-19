@@ -664,7 +664,11 @@ class _ServiceClass(type):
       cls.__remote_methods = dict(cls.__base_methods)
 
       for attribute, value in dct.items():
-        value = getattr(cls, attribute)
+        # CPython injects compiler-only cells such as __classcell__ and
+        # __classdictcell__ into dct; they never become class attributes.
+        value = getattr(cls, attribute, None)
+        if value is None:
+          continue
         remote_method_info = get_remote_method_info(value)
         if remote_method_info:
           cls.__remote_methods[attribute] = value

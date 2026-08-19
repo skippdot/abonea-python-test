@@ -32,7 +32,7 @@ __all__ = ['static_page',
            'first_found',
 ]
 
-_STATUS_PATTERN = re.compile('^(\d{3})\s')
+_STATUS_PATTERN = re.compile(r'^(\d{3})\s')
 
 
 @util.positional(1)
